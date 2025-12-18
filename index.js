@@ -13,7 +13,7 @@ let articles = [];
 // GET article by ID
 app.get("/api/articles/:id", (req, res) => {
   const id = parseInt(req.params.id); // get ID from URL
-  const article = articles.find((a) => a.id === id);
+  const article = articles.find(a => a.id === id);
 
   if (!article) {
     return res.status(404).json({ message: "Article not found" });
