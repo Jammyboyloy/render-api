@@ -1,0 +1,38 @@
+{
+  "info": {
+    "name": "Render Articles API",
+    "_postman_id": "11111111-2222-3333-4444-555555555555",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Articles",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/articles",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "articles"]
+        }
+      }
+    },
+    {
+      "name": "Create Article",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Hello Render\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/articles",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "articles"]
+        }
+      }
+    }
+  ]
+}
