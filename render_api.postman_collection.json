@@ -6,13 +6,24 @@
   },
   "item": [
     {
-      "name": "Get Articles",
+      "name": "Get All Articles",
       "request": {
         "method": "GET",
         "url": {
           "raw": "{{baseUrl}}/api/articles",
           "host": ["{{baseUrl}}"],
           "path": ["api", "articles"]
+        }
+      }
+    },
+    {
+      "name": "Get Article by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/articles/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "articles", "1"]
         }
       }
     },
@@ -25,12 +36,41 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"title\": \"Hello Render\"\n}"
+          "raw": "{\n  \"title\": \"My Article\",\n  \"category\": \"Tech\",\n  \"content\": \"This is the content.\",\n  \"image\": \"image1.jpg\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/api/articles",
           "host": ["{{baseUrl}}"],
           "path": ["api", "articles"]
+        }
+      }
+    },
+    {
+      "name": "Update Article",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Title\",\n  \"category\": \"Science\",\n  \"content\": \"Updated content.\",\n  \"image\": \"new-image.jpg\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/articles/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "articles", "1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Article",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/api/articles/1",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "articles", "1"]
         }
       }
     }
