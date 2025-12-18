@@ -1,8 +1,10 @@
 {
   "info": {
+    "_postman_id": "39de7393-cab6-4964-a5cc-0f6195a6695a",
     "name": "Render Articles API",
-    "_postman_id": "11111111-2222-3333-4444-555555555555",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50844134",
+    "_collection_link": "https://jammyboyloy-41245.postman.co/workspace/Lay-Jammy's-Workspace~6435358c-13fb-4c77-899e-b76a703301cb/collection/50844134-39de7393-cab6-4964-a5cc-0f6195a6695a?action=share&source=collection_link&creator=50844134"
   },
   "item": [
     {
@@ -31,7 +33,7 @@
             {
               "key": "image",
               "type": "file",
-              "src": "/C:/Users/Nanith/OneDrive/Desktop/photo_2025-07-07_23-57-44.jpg"
+              "src": "/D:/Download/img_javascript_480.jpg"
             }
           ]
         },
