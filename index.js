@@ -10,22 +10,27 @@ app.use(express.json());
 // in-memory data
 let articles = [];
 
-// GET
-app.get("/api/articles", (req, res) => {
-  res.json(articles);
+// GET article by ID
+app.get("/api/articles/:id", (req, res) => {
+  const id = parseInt(req.params.id); // get ID from URL
+  const article = articles.find((a) => a.id === id);
+
+  if (!article) {
+    return res.status(404).json({ message: "Article not found" });
+  }
+
+  res.json(article);
 });
 
 // POST (AUTO ID)
 app.post("/api/articles", (req, res) => {
   const { title } = req.body;
 
-  const newId = articles.length > 0
-    ? articles[articles.length - 1].id + 1
-    : 1;
+  const newId = articles.length > 0 ? articles[articles.length - 1].id + 1 : 1;
 
   const newArticle = {
     id: newId,
-    title
+    title,
   };
 
   articles.push(newArticle);
@@ -36,7 +41,7 @@ app.post("/api/articles", (req, res) => {
   res.status(201).json({
     message: "Article created successfully",
     id: newId,
-    data: newArticle
+    data: newArticle,
   });
 });
 
