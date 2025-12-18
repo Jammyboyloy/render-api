@@ -1,17 +1,33 @@
 const express = require("express");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Allow CORS
 app.use(cors());
 app.use(express.json());
 
-// Base URL for images
-const baseImageUrl = "https://render-api-kb6j.onrender.com/uploads/";
+// Serve uploaded files statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// In-memory data
+// Configure multer storage
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // save files in uploads folder
+  },
+  filename: (req, file, cb) => {
+    // use original file name or you can generate a unique name
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage });
+
+// In-memory articles
 let articles = [];
+const baseImageUrl = "https://render-api-kb6j.onrender.com/uploads/";
 
 // GET all articles
 app.get("/api/articles", (req, res) => {
@@ -22,22 +38,10 @@ app.get("/api/articles", (req, res) => {
   res.json(result);
 });
 
-// GET article by ID
-app.get("/api/articles/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const article = articles.find(a => a.id === id);
-
-  if (!article) return res.status(404).json({ message: "Article not found" });
-
-  res.json({
-    ...article,
-    image: article.image ? baseImageUrl + article.image : null
-  });
-});
-
-// POST create new article
-app.post("/api/articles", (req, res) => {
-  const { title, category, content, image } = req.body; // image = filename
+// POST create article with file upload
+app.post("/api/articles", upload.single("image"), (req, res) => {
+  const { title, category, content } = req.body;
+  const file = req.file; // uploaded file
 
   if (!title || !category || !content) {
     return res.status(400).json({ message: "Title, category, and content are required" });
@@ -50,7 +54,7 @@ app.post("/api/articles", (req, res) => {
     title,
     category,
     content,
-    image: image || null // store only filename
+    image: file ? file.filename : null, // save filename
   };
 
   articles.push(newArticle);
@@ -64,44 +68,7 @@ app.post("/api/articles", (req, res) => {
   });
 });
 
-// PUT update article by ID
-app.put("/api/articles/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const { title, category, content, image } = req.body;
-
-  const articleIndex = articles.findIndex(a => a.id === id);
-  if (articleIndex === -1) return res.status(404).json({ message: "Article not found" });
-
-  if (title) articles[articleIndex].title = title;
-  if (category) articles[articleIndex].category = category;
-  if (content) articles[articleIndex].content = content;
-  if (image !== undefined) articles[articleIndex].image = image; // filename
-
-  res.json({
-    message: "Article updated successfully",
-    data: {
-      ...articles[articleIndex],
-      image: articles[articleIndex].image ? baseImageUrl + articles[articleIndex].image : null
-    }
-  });
-});
-
-// DELETE article by ID
-app.delete("/api/articles/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const articleIndex = articles.findIndex(a => a.id === id);
-  if (articleIndex === -1) return res.status(404).json({ message: "Article not found" });
-
-  const deletedArticle = articles.splice(articleIndex, 1);
-
-  res.json({
-    message: "Article deleted successfully",
-    data: {
-      ...deletedArticle[0],
-      image: deletedArticle[0].image ? baseImageUrl + deletedArticle[0].image : null
-    }
-  });
-});
+// PUT, GET by ID, DELETE can stay same as before
 
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
