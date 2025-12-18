@@ -11,12 +11,12 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Ensure uploads folder exists
-const uploadDir = path.join(__dirname, "uploads");
+// Ensure upload folder exists
+const uploadDir = path.join(__dirname, "upload");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
 // Serve uploaded files
-app.use("/uploads", express.static(uploadDir));
+app.use("/upload", express.static(uploadDir));
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -27,7 +27,7 @@ const upload = multer({ storage });
 
 // In-memory articles
 let articles = [];
-const baseImageUrl = "https://render-api-kb6j.onrender.com/uploads/";
+const baseImageUrl = "https://render-api-kb6j.onrender.com/upload/";
 
 // -------------------- ROUTES --------------------
 
