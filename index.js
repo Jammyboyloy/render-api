@@ -15,10 +15,10 @@ app.use(express.json());
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 
-// Serve uploaded files statically
+// Serve uploaded files
 app.use("/uploads", express.static(uploadDir));
 
-// Configure multer storage
+// Multer configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
@@ -52,13 +52,13 @@ app.get("/api/articles/:id", (req, res) => {
   });
 });
 
-// POST create article with file upload
+// POST create article
 app.post("/api/articles", upload.single("image"), (req, res) => {
-  const { title, category, content } = req.body;
+  const { title, content, author } = req.body;
   const file = req.file;
 
-  if (!title || !category || !content) {
-    return res.status(400).json({ message: "Title, category, and content are required" });
+  if (!title || !content || !author) {
+    return res.status(400).json({ message: "Title, content, and author are required" });
   }
 
   const newId = articles.length > 0 ? articles[articles.length - 1].id + 1 : 1;
@@ -66,8 +66,8 @@ app.post("/api/articles", upload.single("image"), (req, res) => {
   const newArticle = {
     id: newId,
     title,
-    category,
     content,
+    author,
     image: file ? file.filename : null
   };
 
@@ -82,18 +82,18 @@ app.post("/api/articles", upload.single("image"), (req, res) => {
   });
 });
 
-// PUT update article (optionally new file)
+// PUT update article
 app.put("/api/articles/:id", upload.single("image"), (req, res) => {
   const id = parseInt(req.params.id);
   const articleIndex = articles.findIndex(a => a.id === id);
   if (articleIndex === -1) return res.status(404).json({ message: "Article not found" });
 
-  const { title, category, content } = req.body;
+  const { title, content, author } = req.body;
   const file = req.file;
 
   if (title) articles[articleIndex].title = title;
-  if (category) articles[articleIndex].category = category;
   if (content) articles[articleIndex].content = content;
+  if (author) articles[articleIndex].author = author;
   if (file) articles[articleIndex].image = file.filename;
 
   res.json({
@@ -105,7 +105,7 @@ app.put("/api/articles/:id", upload.single("image"), (req, res) => {
   });
 });
 
-// DELETE article by ID
+// DELETE article
 app.delete("/api/articles/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const index = articles.findIndex(a => a.id === id);
@@ -113,7 +113,7 @@ app.delete("/api/articles/:id", (req, res) => {
 
   const deleted = articles.splice(index, 1)[0];
 
-  // Optional: delete file from uploads folder
+  // Remove uploaded file
   if (deleted.image) {
     const filePath = path.join(uploadDir, deleted.image);
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
@@ -128,7 +128,7 @@ app.delete("/api/articles/:id", (req, res) => {
   });
 });
 
-// -------------------- START SERVER --------------------
+// Start server
 app.listen(PORT, () => {
   console.log(`API running on port ${PORT}`);
 });
